@@ -206,10 +206,19 @@ def vmess_outbound(o):
     }
 
 
+def remark_of(text):
+    return urllib.parse.unquote(text.partition("#")[2]).strip()
+
+
 def parse_link(link):
     if link.startswith("vless://"):
         body = link[len("vless://"):].split("#", 1)[0]
-        return {"proto": "vless", "share": "vless://" + body, "outbound": parse_vless(body)}
+        return {
+            "proto": "vless",
+            "share": "vless://" + body,
+            "remark": remark_of(link),
+            "outbound": parse_vless(body),
+        }
 
     if link.startswith("ss://"):
         body = link[len("ss://"):].split("#", 1)[0]
@@ -217,14 +226,29 @@ def parse_link(link):
 
         # ss:// wrapping a UUID is really a vless link
         if "@" in base and UUID_RE.match(base.rpartition("@")[0]):
-            return {"proto": "vless", "share": "vless://" + body, "outbound": parse_vless(body)}
+            return {
+                "proto": "vless",
+                "share": "vless://" + body,
+                "remark": remark_of(link),
+                "outbound": parse_vless(body),
+            }
 
         # ss:// wrapping base64 JSON is really a vmess link
         obj = ss_vmess_obj(body)
         if obj:
-            return {"proto": "vmess", "vmess": obj, "outbound": vmess_outbound(obj)}
+            return {
+                "proto": "vmess",
+                "vmess": obj,
+                "remark": str(obj.get("ps", "")),
+                "outbound": vmess_outbound(obj),
+            }
 
-        return {"proto": "ss", "share": "ss://" + body, "outbound": parse_ss(body)}
+        return {
+            "proto": "ss",
+            "share": "ss://" + body,
+            "remark": remark_of(link),
+            "outbound": parse_ss(body),
+        }
 
     raise ValueError("unsupported scheme")
 
