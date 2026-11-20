@@ -2,3 +2,4 @@
 https://raw.githubusercontent.com/UCIRANX/Vpn/refs/heads/main/UcSubot.txt
 https://raw.githubusercontent.com/UCIRANX/Vpn/refs/heads/main/Uciranir.txt
 https://raw.githubusercontent.com/UCIRANX/Vpn/refs/heads/main/Uciran.txt
+https://raw.githubusercontent.com/kort0881/vpn-checker-backend/main/checked/RU_Best/ru_white_part3.txt
